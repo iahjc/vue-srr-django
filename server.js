@@ -15,7 +15,10 @@ const serverInfo =
   `vue-server-renderer/${require('vue-server-renderer/package.json').version}`
 
 const app = express()
-
+var bodyParser = require("body-parser")
+app.use(bodyParser.urlencoded({
+  extended: false
+}))
 function createRenderer (bundle, options) {
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return createBundleRenderer(bundle, Object.assign(options, {
@@ -99,12 +102,58 @@ function render (req, res) {
 
   const context = {
     title: 'Vue HN 2.0', // default title
-    url: req.url
+    url: req.url,
+    product: {
+      title: 'STELLA MCCARTNEY',
+      desc: 'Sneak-Elyse环保合成皮革厚底便鞋',
+      price: '¥2623 - ¥5400',
+      num: '12',
+      img: 'https://mds0.com/media/41994505'
+    }
   }
+//  console.log(renderer)
   renderer.renderToString(context, (err, html) => {
     if (err) {
       return handleError(err)
     }
+
+    res.send(html)
+    if (!isProd) {
+      console.log(`whole request: ${Date.now() - s}ms`)
+    }
+  })
+}
+
+function render1 (req, res) {
+  const s = Date.now()
+
+  res.setHeader("Content-Type", "text/html")
+  res.setHeader("Server", serverInfo)
+
+  const handleError = err => {
+    if (err.url) {
+      res.redirect(err.url)
+    } else if(err.code === 404) {
+      res.status(404).send('404 | Page Not Found')
+    } else {
+      // Render Error Page or Redirect
+      res.status(500).send('500 | Internal Server Error')
+      console.error(`error during render : ${req.url}`)
+      console.error(err.stack)
+    }
+  }
+
+  const context = {
+    title: 'Vue HN 2.0', // default title
+    url: req.url,
+    product: req.body
+  }
+//  console.log(renderer)
+  renderer.renderToString(context, (err, html) => {
+    if (err) {
+      return handleError(err)
+    }
+
     res.send(html)
     if (!isProd) {
       console.log(`whole request: ${Date.now() - s}ms`)
@@ -113,8 +162,21 @@ function render (req, res) {
 }
 
 app.get('*', isProd ? render : (req, res) => {
+  console.log(12121121122112122121211212212121)
+  let hrg = 'hrg'
   readyPromise.then(() => render(req, res))
 })
+
+app.post('/product', isProd ? render : (req, res) => {
+  readyPromise.then(() => render1(req, res))
+})
+
+app.post('*', isProd ? render : (req, res) => {
+  console.log(111111111111111111)
+  console.log(req.body)
+  readyPromise.then(() => render(req, res))
+})
+
 
 const port = process.env.PORT || 8080
 app.listen(port, () => {

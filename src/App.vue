@@ -15,11 +15,19 @@
         </a>
       </nav>
     </header>
-    <transition name="fade" mode="out-in">
-      <router-view class="view"></router-view>
-    </transition>
+    <router-view class="view"></router-view>
   </div>
 </template>
+
+<script>
+  export default {
+    data() {
+      return {
+        desc: 'hrg'
+      }
+    }
+  }
+</script>
 
 <style lang="stylus">
 body

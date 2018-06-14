@@ -9,20 +9,19 @@ Vue.use(Vuex)
 export function createStore () {
   return new Vuex.Store({
     state: {
-      activeType: null,
-      itemsPerPage: 20,
-      items: {/* [id: number]: Item */},
-      users: {/* [id: string]: User */},
-      lists: {
-        top: [/* number */],
-        new: [],
-        show: [],
-        ask: [],
-        job: []
+      product: {}
+    },
+    actions: {
+      fetchItem ({ commit ,router, pr}) {
+          commit('setProduct', pr)
+        // })
       }
     },
-    actions,
-    mutations,
+    mutations: {
+      setProduct (state, product) {
+        Vue.set(state.product, product)
+      }
+    },
     getters
   })
 }

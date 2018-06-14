@@ -1,5 +1,5 @@
 import { createApp } from './app'
-
+// console.log(11111111111111)
 const isDev = process.env.NODE_ENV !== 'production'
 
 // This exported function will be called by `bundleRenderer`.
@@ -12,16 +12,21 @@ export default context => {
     const s = isDev && Date.now()
     const { app, router, store } = createApp()
 
+    // console.log(store)
     const { url } = context
+  //  console.log(context.title)
+    const title = context.title
     const { fullPath } = router.resolve(url).route
-
+    const product = context.product
     if (fullPath !== url) {
       return reject({ url: fullPath })
     }
-
+    // console.log(product)
+    store.state.product = product
+    // store.dispatch('fetchItem', {store, router, product})
     // set router's location
     router.push(url)
-
+    // console.log(store.state.product)
     // wait until router has resolved possible async hooks
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
@@ -33,10 +38,14 @@ export default context => {
       // A preFetch hook dispatches a store action and returns a Promise,
       // which is resolved when the action is complete and store state has been
       // updated.
+// store.dispatch('fetchItem', {store, router, product})
       Promise.all(matchedComponents.map(({ asyncData }) => asyncData && asyncData({
         store,
-        route: router.currentRoute
+        route: router.currentRoutem,
+        product: product
       }))).then(() => {
+
+        // console.log(22222)
         isDev && console.log(`data pre-fetch: ${Date.now() - s}ms`)
         // After all preFetch hooks are resolved, our store is now
         // filled with the state needed to render the app.
@@ -45,6 +54,7 @@ export default context => {
         // store to pick-up the server-side state without having to duplicate
         // the initial data fetching on the client.
         context.state = store.state
+      //  console.log(context.state)
         resolve(app)
       }).catch(reject)
     }, reject)
