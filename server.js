@@ -68,10 +68,10 @@ const serve = (path, cache) => express.static(resolve(path), {
 
 app.use(compression({ threshold: 0 }))
 app.use(favicon('./public/logo-48.png'))
-app.use('/dist', serve('./dist', true))
-app.use('/public', serve('./public', true))
-app.use('/manifest.json', serve('./manifest.json', true))
-app.use('/service-worker.js', serve('./dist/service-worker.js'))
+app.use('/dist', serve('http://127.0.0.1:3000/dist', true))
+app.use('/public', serve('http://127.0.0.1:3000/public', true))
+app.use('/manifest.json', serve('http://127.0.0.1:3000/manifest.json', true))
+app.use('/service-worker.js', serve('http://127.0.0.1:3000/dist/service-worker.js'))
 
 // since this app has no user-specific content, every page is micro-cacheable.
 // if your app involves user-specific content, you need to implement custom
@@ -162,8 +162,6 @@ function render1 (req, res) {
 }
 
 app.get('*', isProd ? render : (req, res) => {
-  console.log(12121121122112122121211212212121)
-  let hrg = 'hrg'
   readyPromise.then(() => render(req, res))
 })
 
