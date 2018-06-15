@@ -142,7 +142,6 @@ function render1 (req, res) {
       console.error(err.stack)
     }
   }
-
   const context = {
     title: 'Vue HN 2.0', // default title
     url: req.url,
@@ -161,18 +160,20 @@ function render1 (req, res) {
   })
 }
 
-app.get('*', isProd ? render : (req, res) => {
-  readyPromise.then(() => render(req, res))
+// app.get('*', isProd ? render : (req, res) => {
+//   readyPromise.then(() => render(req, res))
+// })
+
+app.post('/modesensvue?id=0', isProd ? render : (req, res) => {
+  readyPromise.then(() => render1(req, res))
 })
 
-app.post('/product', isProd ? render : (req, res) => {
+app.post('/modesensvue?id=1', isProd ? render : (req, res) => {
   readyPromise.then(() => render1(req, res))
 })
 
 app.post('*', isProd ? render : (req, res) => {
-  console.log(111111111111111111)
-  console.log(req.body)
-  readyPromise.then(() => render(req, res))
+  readyPromise.then(() => render1(req, res))
 })
 
 
